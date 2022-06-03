@@ -12,6 +12,22 @@ La blockchain è composta da blocchi a cui sono associate un gruppo di transazio
 
 ![blocks](./img/en-blockchain-overview.svg)
 
+### Block header
+
+Il block header contine le informazioni essenziali usate per validare il blocco stesso e stabilire se può essere aggiunto alla blockchain. I valori che seguono caratterizzano il blocco e non sono modificabili, ad eccezione della **nonce**. É proprio quella che viene usata dal miner che, modificandola di volta in volta, spera di riuscire ad ottenere un hash del block header che sia sotto il valor indicato in **nBits**.
+
+```json
+{
+    "version": 2,
+    "previousblockhash": "0000000000000002a7bbd25a417c0374cc55261021e8a9ca74442b01284f05",
+    "hash": "0000000000000001b6b9a13b095e96db41c4a928b97ef2d944a9b31b2cc7bdc4",
+    "merkleroot": "c91c008c26e50763e9f548bb8b2fc323735f73577effbc55502c51eb4cc7cf2e",
+    "nBits": "1903a30c",
+    "time": 1388185914,
+    "nonce": 924591752
+}
+```
+
 ### Transazioni in un blocco
 
 Ogni blocco, per essere creato, deve comprendere almeno la **coinbase transaction**. Questa transazione speciale assegna la ricompensa prevista in quel momento al miner, con la condizione straordinaria che l'**UTXO** non potrà essere speso se non fra 100 blocchi, per dare il tempo alla chain di assicurarsi che il blocco sia definitivo.
@@ -144,6 +160,64 @@ Signature script: OP_0 <A sig> <C sig> <redeemScript>
 
 Uno script può anche specificare un tempo di blocco, per cui la transazione viene validata solo se il timestamp o l'altezza del blocco sono state superate. Fino a quando non diviene spendibile, il mittente ha la possibilità di ri-approriarsi dell'output, e dato che il double spending non è consentito, di fatto annulla la transazione.
 
+### Casi di utilizzo
+
+#### Escrow
+
+Si può immaginare un contratto multisign che interpella un intermediario, magari promettendo una percentuale sulla transazione. Il mittente prepara una transazione che può essere sbloccata da due dei tre agenti in causa: se stesso, il destinatario da cui si aspetta di ricevere il servizio o la terza parte. Nel caso uno fra il mittente e il destinatario violi gli accordi presi, la terza parte può decidere, in maniera estranea a qualsiasi protocollo, da che parte schierarsi e sbloccare i fondi a favore di una delle due parti, senza dover interpellare l'altra.
+
+```mermaid
+flowchart LR
+A[Sender]
+B[Receiver]
+J[Judge]
+T{{Transaction 2-of-3}}
+
+J -.->|Il giudice interviene<br>se una delle due parti<br>non rispetta gli accordi| T
+B -->|Service| A
+A --> T
+T --> B
+T -.-> B
+T -.->A
+```
+
+#### Green address
+
+Dato che per avere la certezza che una transazione non venga invalidata da un tentativo di **double spending** bisogna attendere almeno 6 round, che per Bitcoin si traducono in circa un'ora, un eseciente che fornisce un servizio deperibile e che quindi non può permettersi di aspettare le necessarie conferme potrebbe comunque accettare pagamenti provenienti da un indirizzo fidato, il **green address**, intestato ad un ente garante. L'acquirente quindi paga l'ente con qualsiasi mezzo sia accettato, e questo a sua volta fa da tramite verso il destinatario originale, che invierà subito la merce fidandosi del fatto che l'intermediario non farà double spending.
+
+```mermaid
+flowchart LR
+A[Sender]
+B[Receiver]
+J[Trusted Bank]
+T{{Transaction}}
+
+B -->|Immediate service| A
+A -->|Payement| J
+J --> T
+T --> B
+```
+
+#### Micro pagamenti
+
+Per effettuare micro pagamenti rapidi con Bitcoin, ad esempio per una chiamata con costi al minuto, la strategia adoperata prevede di usare una transazione che rappresenta la caparra da parte del sender con uno script multisig, che necessita l'approvazione del sender e del receiver per essere sbloccato. Per essere sicuro di non perdere il capitale, il sender potrebbe aggiungere anche una transazione a tempo che gli restituisca il tutto se non è stato ancora riscosso.
+Man mano che riceve il servizio viene erogato, il sender manda privatamente una transazione al receiver, senza inviarla però alla blockchain. Il pagamento cresce al ritmo stabilito dal contratto fra i due. Nel momento in cui il sender smette di inviare transazioni o il receiver si ritiene soddisfatto, quest'ultimo riscuote l'ultima transazione facendone il **broadcast**.
+
+```mermaid
+sequenceDiagram
+participant a as Sender
+participant b as Blockchain
+participant r as Receiver
+
+a ->> b : | pay 100 to script | <br> unlock script needs sign <br> from Sender and receiver
+loop untill the money runs out or service ends
+    r ->> a : service
+    a ->> r : sign 1->Reveiver 99->Sender
+end
+r ->> b : collect the last signed transaction
+a ->> b : collect back the first transaction <br> if it has not yet been collected
+```
+
 ## Proof of work
 
 Poiché la blockchain è pubblica e potenzialmente vulnerabile ad un qualsiasi agente che voglia minarne la sicurezza e validità, è stato necessario introdurre un sistema che assicuri che un agente malevolo si trovi a dover svolgere un lavoro fin troppo oneroso per riuscire a raggiungere il suo obiettivo. Poiché la modifica di un singolo blocco richiede la modifica in cascata di tutti i successivi, questa operazione diventa sempre più dispendiosa man mano che la catena si allunga.
@@ -158,6 +232,27 @@ Ogni volta che una proof of work viene superata con successo, il miner acquisisc
 Poiché il minin è un processo asincrono, è comune che più di un blocco venga aggiunto alla blockchain nello stesso slot. Questo genera una **fork**. Tuttavia, seguendo la regola che solo la catena più lunga viene portata avanti, queste temporanee deviazioni vengono presto riassorbite ed eliminate quando una delle catene diventa molto più lunga delle altre. Proprio per questo motivo è bene attendere un numero sufficiente di blocchi prima di essere sicuri che una transazione sia stata effettuata e sia ormai salvata permanentemente nella blockchain.
 
 ![en-blockchain-fork](./img/en-blockchain-fork.svg)
+
+## Rete P2P
+
+La rete Bitcoin è veramente p2p, e non ci sono nodi centralizzati a cui rivolgersi: tutti i nodi hanno uguale importanza. Se un nodo non dà segni di vita per più di 3 ore, è considerato disconnesso.
+Le transazioni sono trasmessi tramite flooding, per cui il mittente comunica la transazione a tutti i nodi a cui è connesso, che a loro volta la inoltrano agli altri nodi. Questo tipo di protocollo non dà nessuna garanzia di tipo*at least once* o *at most once*. Il che vuol dire che i miner possono benissimo essere a lavoro su blocchi con transazioni diverse e quindi con puzzle diversi.
+
+## Limitazioni e punti deboli
+
+### Limiti hard-coded
+
+- 10 minuti fra un blocco e l'altro 
+- dimensione massima di un blocco di 1 Mb
+- 20,000 operazioni massime di firma per blocco
+- 100 M satoshi per blocco
+- 23 M bitocoin massimi
+- mining reward in costante diminuzione
+- funzioni crittografiche fisse
+
+La prima e la seconda limitazione in particolare impongono un limite forte di 7 transazioni/s, molto basso rispetto a quelli di altri tipi di piattaforme come PayPal (50-100) o Visa (2,000-10,000).
+
+Sebbene gli strumenti crittografiche sono ancora estremamente sicure, si dovesse scoprire una vulnerabilità o se col passare del tempo le dimensioni di input e output non fossero più sufficienti a garantirne la sicurezza, non sarebbe facile individuare una soluzione, se non tramite **hard forks**.
 
 
 
