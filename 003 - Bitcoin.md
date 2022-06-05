@@ -209,7 +209,7 @@ participant a as Sender
 participant b as Blockchain
 participant r as Receiver
 
-a ->> b : | pay 100 to script | <br> unlock script needs sign <br> from Sender and receiver
+a ->> b : | pay 100 | <br> unlock script needs sign <br> from Sender and Receiver
 loop untill the money runs out or service ends
     r ->> a : service
     a ->> r : sign 1->Reveiver 99->Sender

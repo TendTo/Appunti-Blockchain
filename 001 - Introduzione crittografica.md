@@ -40,6 +40,24 @@ I **Merkle tree** sono alberi binari che utilizzano gli hash pointers per indica
 
 Se il Merkle tree è ordinato, inoltre, lo si può usare per verificare la **non** appartenenza di un elemento in tempo $O(\log n)$, mostrando i valori dei nodi immediatamente antecedente e successivo a quello che dovrebbe contenere il valore non presente.
 
+```mermaid
+stateDiagram-v2
+1 : Merkle Root
+2 : H(AB)
+3 : H(CD)
+4 : H(A)
+5 : H(B)
+6 : H(C)
+7 : H(D) 
+
+1 --> 2
+1 --> 3
+2 --> 4
+2 --> 5
+3 --> 6
+3 --> 7
+```
+
 ## Firme digitali
 
 Le firme digitali sono primitive crittografiche con le seguenti proprietà:

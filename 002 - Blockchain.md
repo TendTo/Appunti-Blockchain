@@ -90,6 +90,68 @@ P_1 = Pr[A] = Pr[A \and F] + Pr[A \and \neg F] = \\
 = q + pP_2 = q + pP_1^2
 $$
 
+Le blockchain attuali si basano su una prova che garantisca che i miner che guadagna una ricompensa abbia effettivamente svolto il lavoro previsto.
+
+## Algoritmi di consenso basati su puzzle
+
+### Bad puzzle (sequenziale)
+
+Un cattivo puzzle è un puzzle in cui il più forte vince sempre. 
+Ad esempio, se il puzzle fosse risolvere una computazione sequenziale di $n$ passi, il computer con maggiore potenza computazionale ha la certezza di vincere, a discapito degli altri partecipanti.
+
+### Good puzzle (weighted)
+
+Al contrario, un buon puzzle dovrebbe dare un output che sia casuale ma pesato, in modo da avvantaggiare i partecipanti in proporzione alle risorse messe a disposizione da questi.
+
+### ASIC Resistant Puzzles
+
+Una grande ambizione che si vorrebbe poter applicare è quella di evitare la nascita di strumenti estremamente specializzati per poter fare mining.
+Questi dispositivi hanno potenze di calcolo inarrivabili, e permettono a grandi aziende manufatturiere di guadagnare in maniera spropositata, a discapito dei piccoli player. Rimuovere questo tipo di necessità permetterebbe a dispositivi molto più semplici, come pc e addirittura smarphone, la possibilità di partecipare. 
+
+### Hash function basata sulla memoria
+
+Una funzione memory hard è una funzione che ha costo lineare se si è in grado di utilizzare una quantità sufficiente di memoria, ma che diventa quadratico se invece non la si vuole (o non si può) utilizzare. Questo è l'approccio usato da Litecoin.
+
+Un esmpio di implementazione è il seguente (colin percivalI):
+
+-  si riempie la memoria con valori random (write stage)
+-  si legge la memoria in un ordine casuale (read stage)
+
+$$
+\textbf{Passo 1: } \\
+\text{Input: } x \\
+\begin{array}{l}
+V_1 &= H(x) \\
+V_2 &= H(V_1) &= H(H(x)) \\
+V_3 &= H(V_2) &= H^3(x) \\
+... \\
+V_n &= H^n(x) \\
+\end{array} \\
+\\
+\textbf{Passo 2: } \\
+\begin{array}{l}
+A &\leftarrow H^{n+1}(x) = H(V_n) \\
+\text{For } &k = 1 \text{ to } n: \\
+&i \leftarrow A \mod n \\
+&A \leftarrow H(A \oplus V_i)
+\end{array}
+$$
+
+In base alla quantità di storage utilizzata per mantenere i risultati della funzione memorizzati senza doverli ricalcolare, posso ottenere una complessità variabile. Posso, in altre parole, stabilire un tradeoff fra complessità e memoria.
+
+### Proof of work utili
+
+Un idea per giustificare l'enorme spreco che la proof of work richiede è quella di usare quelle risorse per qualcosa di utile. A questo scopo nasce ad esempio Primecoin, che propone un puzzle che consiste nel trovare catene il più lunghe possibili di primi con specifiche caratteristiche.
+
+**Cunningham chain:** $p_1, p_2, ..., p_n$ con $p_i = 2p_{i-1} + 1$.
+
+### Proof of stake
+
+La proof of work ha uno step non necessario, lo spreco enorme di risorse. Una possibile soluzione a questo problema è la proof of stake.
+La blockchain più famosa che adotta questo sistema è Algorand.
+
+Però, se non vi è uno spreco di risorse, cosa da valore alla moneta?
+
 ## Nodi malevoli
 
 ### Rubare
@@ -165,5 +227,89 @@ i1 --> 4
 i2 --> 5
 4 --> 6
 5 --> 7
+```
+
+Sia $pk = g^x, g, q$, ed $sk = x$. Una firma digitale $s$ tradizionale viene prodotta nella seguente maniera:
+$$
+\begin{array}{lll}
+k &\xleftarrow{$}& \{1, 2, ..., q\} \\
+R &=& g^k \mod q \\
+M &=& H(m) \mod q \\
+s &=& k^{-1}(M + Rx) \mod q
+\end{array}
+$$
+Nel caso si parli di wallet gerarchici, alle chiavi pubblica e private viene aggiunta un piccola informazione addizionale. La procedura diventa la seguente:
+$$
+\begin{array}{lll}
+\text{sk info} &= w, y \\
+\text{i-th sk} &= x_i &= y + H(w|i) \\
+\text{address info} &= w, g^y \\
+\text{i-th address} &= g^{x_i} &= g^{H(w|i)}g^y
+\end{array}
+$$
+Questo tipo di schema permette di generare in maniera indipendente un indirizzo e la chiave privata corrispondente. Basta infatti che l'indice coincida. Inoltre, anche se un avversario dovesse venire a conoscenza del valore di $w$, purchè la chiave segreta $y$ rimanga al sicuro,  non viene compromessa la sicurezza dello schema.
+Questa strategia permette la creazione rapida e sicura di un gran numero di coppie chiave-indirizzo apparentemente indipendenti fra di loro, sebbene sarebbe possibile riconoscere che chiavi successive siano state prodotte dalla stessa matrice semplicemente facendone il rapporto, cosa che va a violare le proprietà di anonimato.
+
+### Come memorizzare le informazioni segrete
+
+Alcune soluzioni immediate per memorizzare informazioni segrete in maniera sicura includono
+
+- **dispositivi offline**
+- **brain wallet:** cifrare le informazioni segrete con una password memorizzabile sufficientemente lunga
+- **paper wallet**
+- **tamperproof devices:** dispositivi simili a smartcard in grado, all'occorrenza di produrre una firma digitale valida senza però divulgare la chiave segreta
+
+### Dividere e distribuire le chiavi
+
+Per migliorare ulteriormente la sicurezza delle informazioni sensibili è l'applicazione di tecniche **secret sharing**. L'idea è quella di suddividere le informazioni in **n** parti, ed assicurarsi che sia possibile ricostruire l'informazione se e solo se almeno **k** di queste parti sono riunite. 
+SI può costruire un polinomio in $\Z_p$, del tipo $f(x) = s + a_1 x + a_2 x^2 + ... + x_k x^k$ in maniera tale che è necessario che **k** dei detentori dei punti noti si mettano d'accordo per riuscire a ricostruire il valore di $s$. Il punto debole di questo approccio è che, una volta ricostruito, nulla protegge più il segreto da potenziali agenti malevoli.
+
+### Threshold Cryptography
+
+L'approccio della crittografia a soglia è un modo per ottenere un risultato simile a quanto detto sopra, ma senza la necessità di ricostruire il segreto originale. 
+$$
+\begin{array}{lll}
+\text{Player }i \\
+f(i) &=& z_i \\
+r_i &\xleftarrow{$}& \{1, 2, ..., q\} \\
+\text{Output - } R_i &=& g^{r_i} \mod q \\
+R &=& \prod R_i &=& g^{\sum r_i} \\
+e &=& H(m, R) \\
+\text{Output - } Z_i &=& r_i + e \lambda_iz_i \mod q  \\
+\sum_i Z_i &=& \sum_i (r_i + e \lambda_i z_i) &=& \sum_i r_i + e \sum_i\lambda_i z_i
+\end{array}
+$$
+
+## Servizi economici
+
+### Exchange
+
+I servizi di excange permettono di scambiare valuta fiat (euro, dollari) in una criptovaluta a propria scelta. Poiché l'unico modo per generare criptovalute previsto dal protocollo è quello di diventare un miner, questi tipi di servizi permettono in maniera estremamente semplice e immediata di ottenere la somma desiderata di criptovaluta. È bene notare, però, che si tratta di agenti esterni, non previsti dai protocolli della blockchain, e che sono quindi soggetti a qualsivoglia truffa, come lo schema Ponzi, senza contare rischi di hacking e ingegneria sociale. 
+Ciò che rende particolarmente insidioso il tutto è che, in assenza di alcun tipo di garante o regolamentazione, il piccolo investitore si assume tutto il rischio, senza appello.
+
+### Proof of reserve
+
+Al fine di guadagnarsi la fiducia degli investitori, gli istituti di exchange possono sottoporsi ad proof of reserve di varie tipologie.
+
+- **Lower bound:** effettuando una transazione a se stessi (o ad un indirizzo che si possiede), aggiungendo una string di challenge alla transazione, l'entità è in grado di di dimostrare di possedere almeno quella quantità di liquidità
+- **Proof of inclusion:** si costruisce un **Merkle tree** a partire dal saldo di tutti gli utenti, e si pubblica unicamente la Merkle root. Ogni utente può verificare lo stato del proprio account richiedendo una verifica di inclusione nel Merkle tree all'entità
+
+```mermaid
+stateDiagram-v2
+1 : Merkle Root
+2 : H(AB)
+3 : H(CD)
+4 : H(A)
+5 : H(B)
+6 : H(C)
+7 : H(D)
+
+1 --> 2
+1 --> 3
+2 --> 4
+2 --> 5
+3 --> 6
+3 --> 7
+
 ```
 
