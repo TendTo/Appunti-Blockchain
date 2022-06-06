@@ -229,7 +229,8 @@ i2 --> 5
 5 --> 7
 ```
 
-Sia $pk = g^x, g, q$, ed $sk = x$. Una firma digitale $s$ tradizionale viene prodotta nella seguente maniera:
+Sia $pk = g^x, g, q$, ed $sk = x$. 
+Si ricordi che nel caso di **ECDSA**, la firma digitale $s$ su un messaggio $m$ viene prodotta nella seguente maniera:
 $$
 \begin{array}{lll}
 k &\xleftarrow{$}& \{1, 2, ..., q\} \\
@@ -287,29 +288,10 @@ $$
 I servizi di excange permettono di scambiare valuta fiat (euro, dollari) in una criptovaluta a propria scelta. Poiché l'unico modo per generare criptovalute previsto dal protocollo è quello di diventare un miner, questi tipi di servizi permettono in maniera estremamente semplice e immediata di ottenere la somma desiderata di criptovaluta. È bene notare, però, che si tratta di agenti esterni, non previsti dai protocolli della blockchain, e che sono quindi soggetti a qualsivoglia truffa, come lo schema Ponzi, senza contare rischi di hacking e ingegneria sociale. 
 Ciò che rende particolarmente insidioso il tutto è che, in assenza di alcun tipo di garante o regolamentazione, il piccolo investitore si assume tutto il rischio, senza appello.
 
-### Proof of reserve
+### Proof of reserve e Proof of liabilities
 
 Al fine di guadagnarsi la fiducia degli investitori, gli istituti di exchange possono sottoporsi ad proof of reserve di varie tipologie.
 
-- **Lower bound:** effettuando una transazione a se stessi (o ad un indirizzo che si possiede), aggiungendo una string di challenge alla transazione, l'entità è in grado di di dimostrare di possedere almeno quella quantità di liquidità
-- **Proof of inclusion:** si costruisce un **Merkle tree** a partire dal saldo di tutti gli utenti, e si pubblica unicamente la Merkle root. Ogni utente può verificare lo stato del proprio account richiedendo una verifica di inclusione nel Merkle tree all'entità
-
-```mermaid
-stateDiagram-v2
-1 : Merkle Root
-2 : H(AB)
-3 : H(CD)
-4 : H(A)
-5 : H(B)
-6 : H(C)
-7 : H(D)
-
-1 --> 2
-1 --> 3
-2 --> 4
-2 --> 5
-3 --> 6
-3 --> 7
-
-```
+- **Proof of reserve:** effettuando una transazione a se stessi (o ad un indirizzo che si possiede), aggiungendo una string di challenge alla transazione, l'entità è in grado di di dimostrare di possedere almeno quella quantità di liquidità
+- **Proof of liabilities:** si costruisce un **Merkle tree** a partire dal saldo di tutti gli utenti, e si pubblica unicamente la Merkle root. Ogni utente può verificare lo stato del proprio account richiedendo una verifica di inclusione nel Merkle tree all'entità
 

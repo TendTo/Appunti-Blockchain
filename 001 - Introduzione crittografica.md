@@ -100,6 +100,50 @@ Ci sono alcune limitazioni che spesso sono aggirate o ignorate nella pratica:
 - c'è un limite sulla dimensione del messaggio che si può firmare
   - possiamo però firmare l'hash del messaggio
 
+### EC-DSA
+
+Piuttosto che utilizzare uno schema di firma tradizionale, la maggior parte delle criptovalute ha optato per utilizzare un schema di firma basato sulle curve ellittiche. Nello specifico, la curva utilizzata è **Secp256k1**. Questa è definita come $y^2 = x^3 + 7$. Il vantaggio di usare questo tipo di schemi è che generalmente si riesce a raggiungere un livello di sicurezza adeguato utilizzando parametri più corti.
+
+| Parametro                  | Dimensione |
+| -------------------------- | ---------- |
+| Private Key                | 256 bit    |
+| Public key (non compressa) | 512 bit    |
+| Public key (compressa)     | 257 bit    |
+| Messaggio da firmare       | 256 bit    |
+| Firma                      | 512 bit    |
+
+Si noti che, sebbene le dimensioni del messaggio che ECDSA è in grado di firmare siano decisamente limitate, questo non rappresenta un problema nel momento in cui il messaggio può essere hashato prima di essere firmato.
+
+Scendendo ora nei dettagli dell'algoritmo di firma, una firma digitale $s$ su un messaggio $m$ viene prodotta nella seguente maniera:
+$$
+\text{Parametri pubblici: } \text{curva Secp256k1}, G, n \\
+\text{Parametri segreti: } x \\
+\\
+\begin{array}{lll}
+M &=& H(m) \\
+k &\xleftarrow{$}& \{1, 2, ..., n - 1\} \\
+(x, y) &=& k \times G \\
+r &=& x \mod n & (r \ne 0)\\ 
+s &=& k^{-1}(M + rx) \mod n & (s \ne 0)
+\end{array} \\
+\\
+\text{Output: } (r, s)
+$$
+L'algoritmo di verifica di una firma $(r, s)$ su un messaggio $m$ procede così:
+$$
+\text{Parametri pubblici: } \text{curva Secp256k1}, G, n, pk \\
+\\
+\begin{array}{lll}
+r, s &\in& [1, n-1] \\
+M &=& H(m) \\
+u_1 &=& zs^{-1} \mod n \\
+u_2 &=& rs^{-1} \mod n \\
+(x, y) &=& u_1 \times G + u_2 \times pk
+\end{array} \\
+\\
+\text{Output: } r \equiv x \mod n
+$$
+
 ### Public key come identità
 
 In un sistema che si basa sulla firma digitale, l'idea di identità si sposa perfettamente con la chiave pubblica di quella entità. In altre parole, vedendo un messaggio *msg* che verifica $\mathcal{verify}(pk, msg, sig) == 1$, si può pensare che questo messaggio sia stati inviato da "*pk*". Creare una nuova identità consiste semplicemente nel generare una nuova coppia di chiavi. Sebbene non ci sia quindi nessun legame fra chiave e utilizzatore, uno studio attento di pattern potrebbe comunque tradire l'identità dell'utente. Questo sistema non garantisce quindi anonimato, ma pseudo-anonimato.
