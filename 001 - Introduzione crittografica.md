@@ -136,12 +136,15 @@ $$
 \begin{array}{lll}
 r, s &\in& [1, n-1] \\
 M &=& H(m) \\
-u_1 &=& zs^{-1} \mod n \\
+u_1 &=& Ms^{-1} \mod n \\
 u_2 &=& rs^{-1} \mod n \\
-(x, y) &=& u_1 \times G + u_2 \times pk
+(x, y) &=& u_1 \times G + u_2 \times pk = \\ 
+&=& (M + rx)s^{-1} \times G = \\
+&=& \frac{M + rx}{M +rx} k \times G = \\
+&=& k \times G
 \end{array} \\
 \\
-\text{Output: } r \equiv x \mod n
+\text{Output: } \begin{cases} 1 & \text{se } r \equiv x \mod n \\ 0 & \text{altrimenti} \end{cases}
 $$
 
 ### Public key come identità
