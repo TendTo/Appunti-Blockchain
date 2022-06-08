@@ -112,7 +112,7 @@ Questi dispositivi hanno potenze di calcolo inarrivabili, e permettono a grandi 
 
 Una funzione memory hard è una funzione che ha costo lineare se si è in grado di utilizzare una quantità sufficiente di memoria, ma che diventa quadratico se invece non la si vuole (o non si può) utilizzare. Questo è l'approccio usato da Litecoin.
 
-Un esmpio di implementazione è il seguente (colin percivalI):
+Un esempio di implementazione è il seguente (colin percivalI):
 
 -  si riempie la memoria con valori random (write stage)
 -  si legge la memoria in un ordine casuale (read stage)
@@ -175,6 +175,64 @@ Dopo aver trovato il prossimo blocco valido, un miner potrebbe non annunciare su
 
 Una volta prodotta una coppia di chiavi pubblica e privata, la seconda viene usata per generare un indirizzo pubblico che identificherà l'utente e permetterà di ricevere pagamenti da altri utenti. L'indirizzo viene generato applicando una funzione hash alla chiave pubblica (nel caso di Bitcoin vengono applicate in sequenza `sha256` e `kasha160`) e il risultato ottenuto viene codificato in base-58, che esclude caratteri problematici come 0 e O, e viene aggiunta un numero di versione e un piccolo checksum che previene errori di battitura.
 Esistono anche i vanity address che sono indirizzi che contengono parole di senso compiuto. Per ottenerli, vengono generati un gran numero di coppie di chiavi, sperando che una delle chiavi pubbliche generi l'indirizzo desiderato.
+
+## Anonimato
+
+Vi sono vari approcci all'anonimato.
+
+- Poter interagire senza utilizzare il **proprio nome**
+- Poter interagire senza usare **alcun nome**
+
+Perché si ottenga una condizione di anonimità in computer science, si presuppone di avere un sistema che garantisca **pseudoanonimato** (non si utilizza un nome vero) e **unlikability** (non è possibile tracciare lo stesso utente lungo più interazioni). Questo non è un problema per nulla banale. Anche una semplice osservazione empirica, come il fatto che il primo nodo ad informati di una transazione è probabilmente anche quello che l'ha generata, può minare seriamente questa proprietà.
+
+### TOR (The Onion Router)
+
+Tor è un software che permette di navigare online con un certo livello di anonimato pensato per applicazioni che necessitano di una bassa latenza, come la navigazione online.
+
+Il funzionamento è il seguente: determinata una selezione di nodi all'interno della rete TOR, il messaggio da inviare viene cifrato con chiavi simmetriche dei nodi, nell'ordine in cui voglio che i nodi vengano attraversati. In questo modo, dopo aver cifrato il messaggio originale n volte, gli n nodi che il messaggio attraverserà toglieranno ciascuno il livello di cifratura che gli compete, così che il plaintext sia ottenuto solo al raggiungimento del destinatario.
+
+### Mix Network
+
+Ogni transazione passa da una serie di intermediari che si occupano di riordinare le richieste, disaccoppiando input ed output. 
+Molti light Wallet già applicano questo tipo di operazioni, ma si tratta di un comportamento non garantito, che potrebbe cambiare in futuro, senza contare che c'è la possibilità che venga tenuta traccia della mix effettuato.
+L'idea è quindi quella di utilizzare un sistema dedicato. Questo dovrebbe verificare le seguenti condizioni:
+
+- Usare una serie di mixer con API standard, per garantire resistenza contro attori disonesti e attacchi
+- Transazioni uniformi, in maniera che una transazione sia indistinguibile dalle altre. Meglio usare un gruppo ristretto di tagli standard
+- I client dovrebbero essere automatizzati e comuni a quanto più simili possibile, così da non poterli usare per deanonimizzare l'utente sulla base delle caratteristiche del singolo client.
+- Ci devono essere delle fee all-or-nothing
+
+Attualmente non sembra esserci uno standard ufficiale per i mixing server su Bitcoin.
+
+Un approccio promettente è quello di utilizzare un mixing decentralizzato, che quindi esclude una singola entità che svolge tutto il lavoro. Inoltre, per lo stesso principio di decentralizzazione, un attacco sarebbe reso molto più difficile dalla mole di agenti onesti presenti.
+Ad esempio, si potrebbe ipotizzare che un gruppo di utenti si mette d'accordo e stila una lista di mittenti e destinatari, che riceveranno tutti una stessa somma. Tutti i futuri mittenti firmano la transazione, e nel momento in cui tutte le firme sono state apposte, la singola transazione è pubblicata. Ne segue che, pur conoscendo tutti gli agenti, è impossibile associare accuratamente la coppia mittente-destinatario.
+
+```mermaid
+flowchart LR
+T[[Singola\ntransazione]]
+subgraph Mittenti
+A
+B
+C
+end
+subgraph Destinatari
+D
+E
+F
+end
+A --> T
+B --> T
+C --> T
+
+T --> D
+T --> E
+T --> F
+
+```
+
+Per poter effettuare questa operazione, sarebbe necessario trovare gli altri mittenti interessati a partecipare, scambiandosi gli indirizzi di input/output e costruire la transazione. Questo richiede che tutti firmino la transazione, in cui devono figurare tutti i destinatari.
+
+Rimangono comunque una serie di problemi: come trovare altri partecipanti, è plausibile che i peers conoscano il mixing, e soprattutto chiunque potrebbe invalidare la transazione semplicemente non firmando la transazione.
 
 ## Wallet criptovalute
 
