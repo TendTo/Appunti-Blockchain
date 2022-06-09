@@ -33,7 +33,14 @@ Infine, deve essere facile ed efficiente da verificare da chiunque, per assicura
 
 ### 4) Come si può gestire un segreto condiviso fra più agenti?
 
+Per migliorare la sicurezza relativa alla memorizzazione di informazioni sensibili, un approccio utilizzabile è quello di spezzettare il segreto in $n$ parti e rendere possibile il suo ripristino se e solo se $1 \lt k \le n$ di queste sono d'accordo. Il requisito base è che anche se si è a conoscenza di un numero $m \lt k$ di queste parti, non si ottiene alcuna informazione a proposito del segreto completo.
+Se $k = n$, una semplice implementazione è produrre $n$ segreti che, applicando l'operazione di $\oplus$ ricostruiscano il segreto iniziale.
+Se $k \lt n$, si può ricorrere a soluzioni algebriche. SI consideri una equazione nella forma $s + r_1x + r_2x^2 + ... + r_{k-1}x^{k - 1}$. Con questa configurazione è necessario ottenere $k$ valori di $x$ per essere in grado di risolvere l'equazione e trovare quindi il valore di $s$, che è il segreto iniziale.
+
 ### 5) Che problema risolve la threshold cryptography? Indicarne una possibile implementazione.
+
+Assumendo il segreto che si intende proteggere sia una chiave privata da utilizzare per firmare una transazione, il secret sharing tradizionale ha un punto debole: per poter effettivamente firmare una transazione, è necessario ricostruire il segreto. In questo momento un avversario sarebbe in grado di intercettare e rubare la chiave segreta in un colpo solo.
+Una soluzione a questo problema realizzabile in Bitcoin è utilizzare gli script di multisignature. Creando $n$ account e memorizzando le chiavi private in dispositivi diversi, si dà la possibilità a ciascuno di firmare la propria parte di transazione, con la consapevolezza che l'output sarà utilizzabile solo se vengono prodotte $k$ firme valide. 
 
 ### 6) Come funzionano i Bitcoin script?
 
