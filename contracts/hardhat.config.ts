@@ -39,7 +39,7 @@ const config: HardhatUserConfig = {
     apiKey: process.env.ETHERSCAN_API_KEY,
   },
   typechain: {
-    outDir: "../src/types",
+    outDir: "typechain",
   },
 };
 
