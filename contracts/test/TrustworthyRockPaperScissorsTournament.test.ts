@@ -105,10 +105,22 @@ describe("TrustworthyRockPaperScissorsTournament", function () {
     await expect(contract.moveScissor()).to.be.revertedWith(nonPlayerError);
   });
 
+  it("non player cannot know the move a player made", async function () {
+    await expect(contract.getCurrentMove()).to.be.revertedWith(nonPlayerError);
+  });
+
   it("the match fee must be payed for players to make a move", async function () {
     await expect(p0Contract.movePaper()).to.be.revertedWith(minFeeError);
     await expect(p0Contract.moveRock()).to.be.revertedWith(minFeeError);
     await expect(p0Contract.moveScissor()).to.be.revertedWith(minFeeError);
+  });
+
+  
+  it("a player can know what move has made this round", async function () {
+    expect(await p0Contract.getCurrentMove()).to.be.equal(0);
+    await p0Contract.movePaper(minVal);
+    expect(await p0Contract.getCurrentMove()).to.be.equal(2);
+    expect(await p1Contract.getCurrentMove()).to.be.equal(0);
   });
 
   it("a player cannot make two moves in a row", async function () {

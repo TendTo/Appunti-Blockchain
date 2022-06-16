@@ -93,6 +93,10 @@ contract TrustworthyRockPaperScissorsTournament is
         assert(players[0].addr == _player0 && players[1].addr == _player1);
     }
 
+    function getCurrentMove() external view isPlayer returns (Move){
+        return players[msg.sender == players[0].addr ? 0 : 1].currentMove;
+    }
+
     function getPlayers() external view returns (address payable[2] memory) {
         return [players[0].addr, players[1].addr];
     }
