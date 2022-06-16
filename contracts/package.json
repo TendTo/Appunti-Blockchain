@@ -2,7 +2,8 @@
   "name": "hardhat-project",
   "scripts": {
     "compile": "hardhat compile",
-    "test": "hardhat test"
+    "test": "hardhat test",
+    "deploy:ropsten": "hardhat run ./scripts/TrustworthyRockPaperScissorsTournamentGenerator.deploy.ts --network ropsten"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.6",

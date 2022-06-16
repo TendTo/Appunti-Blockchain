@@ -9,7 +9,7 @@ contract TrustworthyRockPaperScissorsTournamentGenerator {
         address indexed player1,
         address indexed tournament
     );
-    event EndTournament(address indexed tournament, uint8 winner);
+    event EndTournament(address indexed tournament, address indexed winner);
 
     function startTournament(
         address payable _player0,
@@ -27,7 +27,7 @@ contract TrustworthyRockPaperScissorsTournamentGenerator {
         emit NewTournament(_player0, _player1, address(newTounament));
     }
 
-    function endTournament(uint8 winner) external {
+    function endTournament(address winner) external {
         emit EndTournament(msg.sender, winner);
     }
 }

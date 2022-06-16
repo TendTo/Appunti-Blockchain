@@ -165,12 +165,12 @@ contract TrustworthyRockPaperScissorsTournament is
         if (players[0].wins >= targetWins) {
             emit TournamentWonBy(Player.First);
             // [Improment]
-            generator.endTournament(0);
+            generator.endTournament(players[0].addr);
             selfdestruct(players[0].addr);
         } else if (players[1].wins >= targetWins) {
             emit TournamentWonBy(Player.Second);
             // [Improment]
-            generator.endTournament(1);
+            generator.endTournament(players[1].addr);
             selfdestruct(players[1].addr);
         }
     }

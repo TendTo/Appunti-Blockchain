@@ -25,13 +25,13 @@ describe("TrustworthyRockPaperScissorsTournamentGenerator", function () {
         player0.address,
         player1.address,
         targetWins,
-        minFee
+        minFee,
       )
     ).wait();
     const log = generator.interface.parseLog(tx.logs[0]);
     const p0Contract = TrustworthyRockPaperScissorsTournament__factory.connect(
       log.args.tournament,
-      player0
+      player0,
     );
     const p1Contract = p0Contract.connect(player1);
     return [p0Contract, p1Contract] as const;
@@ -40,7 +40,7 @@ describe("TrustworthyRockPaperScissorsTournamentGenerator", function () {
   before(async () => {
     [owner, player0, player1] = await ethers.getSigners();
     generatorFactory = await ethers.getContractFactory(
-      "TrustworthyRockPaperScissorsTournamentGenerator"
+      "TrustworthyRockPaperScissorsTournamentGenerator",
     );
   });
 
@@ -53,7 +53,7 @@ describe("TrustworthyRockPaperScissorsTournamentGenerator", function () {
       player0.address,
       player1.address,
       targetWins,
-      minFee
+      minFee,
     );
     await expect(txInProgress).to.emit(generator, "NewTournament");
 
@@ -82,7 +82,7 @@ describe("TrustworthyRockPaperScissorsTournamentGenerator", function () {
     await p0Contract.moveScissor(minVal);
     await expect(p1Contract.movePaper(minVal))
       .to.emit(generator, "EndTournament")
-      .withArgs(p0Contract.address, 0);
+      .withArgs(p0Contract.address, player0.address);
     await expect(p0Contract.getPlayers()).to.be.reverted;
   });
 
@@ -102,7 +102,7 @@ describe("TrustworthyRockPaperScissorsTournamentGenerator", function () {
     await p0Contract.movePaper(minVal);
     await expect(p1Contract.moveScissor(minVal))
       .to.emit(generator, "EndTournament")
-      .withArgs(p0Contract.address, 1);
+      .withArgs(p0Contract.address, player1.address);
     await expect(p0Contract.getPlayers()).to.be.reverted;
   });
 
@@ -144,7 +144,10 @@ describe("TrustworthyRockPaperScissorsTournamentGenerator", function () {
     await loserContract.movePaper(minVal);
     await expect(winnerContract.moveScissor(minVal))
       .to.emit(generator, "EndTournament")
-      .withArgs(p0Contract.address, p0Wins > p1Wins ? 0 : 1);
+      .withArgs(
+        p0Contract.address,
+        p0Wins > p1Wins ? player0.address : player1.address,
+      );
     await expect(p0Contract.getPlayers()).to.be.reverted;
   });
 });
