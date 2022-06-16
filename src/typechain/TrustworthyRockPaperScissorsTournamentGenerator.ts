@@ -30,7 +30,7 @@ import type {
 export interface TrustworthyRockPaperScissorsTournamentGeneratorInterface
   extends utils.Interface {
   functions: {
-    "endTournament(uint8)": FunctionFragment;
+    "endTournament(address)": FunctionFragment;
     "startTournament(address,address,uint8,uint256)": FunctionFragment;
   };
 
@@ -40,7 +40,7 @@ export interface TrustworthyRockPaperScissorsTournamentGeneratorInterface
 
   encodeFunctionData(
     functionFragment: "endTournament",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "startTournament",
@@ -62,7 +62,7 @@ export interface TrustworthyRockPaperScissorsTournamentGeneratorInterface
   ): Result;
 
   events: {
-    "EndTournament(address,uint8)": EventFragment;
+    "EndTournament(address,address)": EventFragment;
     "NewTournament(address,address,address)": EventFragment;
   };
 
@@ -72,10 +72,10 @@ export interface TrustworthyRockPaperScissorsTournamentGeneratorInterface
 
 export interface EndTournamentEventObject {
   tournament: string;
-  winner: number;
+  winner: string;
 }
 export type EndTournamentEvent = TypedEvent<
-  [string, number],
+  [string, string],
   EndTournamentEventObject
 >;
 
@@ -122,7 +122,7 @@ export interface TrustworthyRockPaperScissorsTournamentGenerator
 
   functions: {
     endTournament(
-      winner: PromiseOrValue<BigNumberish>,
+      winner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -136,7 +136,7 @@ export interface TrustworthyRockPaperScissorsTournamentGenerator
   };
 
   endTournament(
-    winner: PromiseOrValue<BigNumberish>,
+    winner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -150,7 +150,7 @@ export interface TrustworthyRockPaperScissorsTournamentGenerator
 
   callStatic: {
     endTournament(
-      winner: PromiseOrValue<BigNumberish>,
+      winner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -164,13 +164,13 @@ export interface TrustworthyRockPaperScissorsTournamentGenerator
   };
 
   filters: {
-    "EndTournament(address,uint8)"(
+    "EndTournament(address,address)"(
       tournament?: PromiseOrValue<string> | null,
-      winner?: null
+      winner?: PromiseOrValue<string> | null
     ): EndTournamentEventFilter;
     EndTournament(
       tournament?: PromiseOrValue<string> | null,
-      winner?: null
+      winner?: PromiseOrValue<string> | null
     ): EndTournamentEventFilter;
 
     "NewTournament(address,address,address)"(
@@ -187,7 +187,7 @@ export interface TrustworthyRockPaperScissorsTournamentGenerator
 
   estimateGas: {
     endTournament(
-      winner: PromiseOrValue<BigNumberish>,
+      winner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -202,7 +202,7 @@ export interface TrustworthyRockPaperScissorsTournamentGenerator
 
   populateTransaction: {
     endTournament(
-      winner: PromiseOrValue<BigNumberish>,
+      winner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -30,6 +30,7 @@ export interface TrustworthyRockPaperScissorsTournamentInterface
   extends utils.Interface {
   functions: {
     "disputedMatches()": FunctionFragment;
+    "getCurrentMove()": FunctionFragment;
     "getPlayers()": FunctionFragment;
     "getPlayersWins()": FunctionFragment;
     "movePaper()": FunctionFragment;
@@ -43,6 +44,7 @@ export interface TrustworthyRockPaperScissorsTournamentInterface
   getFunction(
     nameOrSignatureOrTopic:
       | "disputedMatches"
+      | "getCurrentMove"
       | "getPlayers"
       | "getPlayersWins"
       | "movePaper"
@@ -55,6 +57,10 @@ export interface TrustworthyRockPaperScissorsTournamentInterface
 
   encodeFunctionData(
     functionFragment: "disputedMatches",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCurrentMove",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -83,6 +89,10 @@ export interface TrustworthyRockPaperScissorsTournamentInterface
 
   decodeFunctionResult(
     functionFragment: "disputedMatches",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCurrentMove",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getPlayers", data: BytesLike): Result;
@@ -162,6 +172,8 @@ export interface TrustworthyRockPaperScissorsTournament extends BaseContract {
   functions: {
     disputedMatches(overrides?: CallOverrides): Promise<[number]>;
 
+    getCurrentMove(overrides?: CallOverrides): Promise<[number]>;
+
     getPlayers(overrides?: CallOverrides): Promise<[[string, string]]>;
 
     getPlayersWins(
@@ -189,6 +201,8 @@ export interface TrustworthyRockPaperScissorsTournament extends BaseContract {
 
   disputedMatches(overrides?: CallOverrides): Promise<number>;
 
+  getCurrentMove(overrides?: CallOverrides): Promise<number>;
+
   getPlayers(overrides?: CallOverrides): Promise<[string, string]>;
 
   getPlayersWins(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
@@ -213,6 +227,8 @@ export interface TrustworthyRockPaperScissorsTournament extends BaseContract {
 
   callStatic: {
     disputedMatches(overrides?: CallOverrides): Promise<number>;
+
+    getCurrentMove(overrides?: CallOverrides): Promise<number>;
 
     getPlayers(overrides?: CallOverrides): Promise<[string, string]>;
 
@@ -245,6 +261,8 @@ export interface TrustworthyRockPaperScissorsTournament extends BaseContract {
   estimateGas: {
     disputedMatches(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getCurrentMove(overrides?: CallOverrides): Promise<BigNumber>;
+
     getPlayers(overrides?: CallOverrides): Promise<BigNumber>;
 
     getPlayersWins(overrides?: CallOverrides): Promise<BigNumber>;
@@ -270,6 +288,8 @@ export interface TrustworthyRockPaperScissorsTournament extends BaseContract {
 
   populateTransaction: {
     disputedMatches(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getCurrentMove(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getPlayers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
