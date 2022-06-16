@@ -15,7 +15,7 @@
 ### Smart-contracts - TrustworthyRockPaperScissorsTournament
 
 DApp realizzata in [React](https://reactjs.org/) per interagire con lo smart-contract [_TrustworthyRockPaperScissorsTournament_](./smart-contracts/contracts/contracts/TrustworthyRockPaperScissorsTournament.sol).  
-È presente anche un contratto proxy, [_TrustworthyRockPaperScissorsTournamentGenerator_](./smart-contracts/contracts/contracts/TrustworthyRockPaperScissorsTournamentGenerator.sol), al fine di avviare più tornei. Lo smart contract è attualmente sulla rete [Ropsten](https://ropsten.etherscan.io/) all'indirizzo [0x0E3b5a1CfFC7f946cdF4BAB1F1D39ECa5C7E30BC](https://ropsten.etherscan.io/address/0x0E3b5a1CfFC7f946cdF4BAB1F1D39ECa5C7E30BC)
+È presente anche un contratto proxy, [_TrustworthyRockPaperScissorsTournamentGenerator_](./smart-contracts/contracts/contracts/TrustworthyRockPaperScissorsTournamentGenerator.sol), al fine di avviare più tornei. Lo smart contract è attualmente sulla rete [Ropsten](https://ropsten.etherscan.io/) all'indirizzo [0x0E3b5a1CfFC7f946cdF4BAB1F1D39ECa5C7E30BC](https://ropsten.etherscan.io/address/0x0E3b5a1CfFC7f946cdF4BAB1F1D39ECa5C7E30BC).  
 La consegna era la seguente:
 
 ```solidity
