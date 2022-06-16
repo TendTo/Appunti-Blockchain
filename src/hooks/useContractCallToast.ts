@@ -2,29 +2,27 @@ import { TransactionStatus } from "@usedapp/core";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
-export function useContractCallToast(state: TransactionStatus, resetState: () => void) {
+export function useContractCallToast(
+  state: TransactionStatus,
+  resetState?: () => void,
+) {
   useEffect(() => {
+    toast.dismiss();
     switch (state.status) {
       case "Success":
-        toast.dismiss();
-        toast.success("Demand set");
-        resetState();
+        toast.success("The transaction was successful");
+        resetState && resetState();
         break;
       case "Fail":
       case "Exception":
-        toast.dismiss();
         toast.error(state.errorMessage);
-        resetState();
+        resetState && resetState();
         break;
       case "Mining":
-        toast.dismiss();
-        toast.loading("The transaction is being processed, please wait...");
+        toast.loading("The transaction is being processed...");
         break;
       case "PendingSignature":
-        toast.dismiss();
-        toast.info("Sign the transaction with your wallet", {
-          toastId: "demand",
-        });
+        toast.info("Sign the transaction with your wallet");
         break;
       default:
         break;

@@ -1,10 +1,17 @@
-import { useEthers } from "@usedapp/core";
 import React from "react";
-import { LoginPage } from "./components";
+import { useEthers } from "@usedapp/core";
+import { LoginPage, TournamentCreate, TournamentList } from "./components";
 
 function DApp() {
   const { active, account } = useEthers();
-  return active && account ? <div>Fest</div> : <LoginPage />;
+  return active && account ? (
+    <main>
+      <TournamentList />
+      <TournamentCreate />
+    </main>
+  ) : (
+    <LoginPage />
+  );
 }
 
 export default DApp;
