@@ -115,11 +115,26 @@ describe("TrustworthyRockPaperScissorsTournament", function () {
     await expect(p0Contract.moveScissor()).to.be.revertedWith(minFeeError);
   });
 
-  
-  it("a player can know what move has made this round", async function () {
+  it("player 0 can know what move has made this round", async function () {
     expect(await p0Contract.getCurrentMove()).to.be.equal(0);
     await p0Contract.movePaper(minVal);
     expect(await p0Contract.getCurrentMove()).to.be.equal(2);
+    expect(await p1Contract.getCurrentMove()).to.be.equal(0);
+  });
+
+  it("player 1 can know what move has made this round", async function () {
+    expect(await p1Contract.getCurrentMove()).to.be.equal(0);
+    await p1Contract.moveRock(minVal);
+    expect(await p1Contract.getCurrentMove()).to.be.equal(1);
+    expect(await p0Contract.getCurrentMove()).to.be.equal(0);
+  });
+
+  it("player 1 can know what move has made this round", async function () {
+    expect(await p0Contract.getCurrentMove()).to.be.equal(0);
+    expect(await p1Contract.getCurrentMove()).to.be.equal(0);
+    await p0Contract.moveRock(minVal);
+    await p1Contract.moveRock(minVal);
+    expect(await p1Contract.getCurrentMove()).to.be.equal(0);
     expect(await p1Contract.getCurrentMove()).to.be.equal(0);
   });
 
