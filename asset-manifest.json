@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/Appunti-Blockchain/static/css/main.f3b2c3a5.css",
+    "main.js": "/Appunti-Blockchain/static/js/main.94426aed.js",
+    "static/js/787.fa20701b.chunk.js": "/Appunti-Blockchain/static/js/787.fa20701b.chunk.js",
+    "index.html": "/Appunti-Blockchain/index.html",
+    "static/media/add.svg": "/Appunti-Blockchain/static/media/add.e67e60e527adda412b0d5f8110edeedf.svg",
+    "main.f3b2c3a5.css.map": "/Appunti-Blockchain/static/css/main.f3b2c3a5.css.map",
+    "main.94426aed.js.map": "/Appunti-Blockchain/static/js/main.94426aed.js.map",
+    "787.fa20701b.chunk.js.map": "/Appunti-Blockchain/static/js/787.fa20701b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f3b2c3a5.css",
+    "static/js/main.94426aed.js"
+  ]
+}
