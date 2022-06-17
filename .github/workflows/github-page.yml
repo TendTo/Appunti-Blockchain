@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
     paths:
-      - app/**
+      - smart-contracts/**
 
 jobs:
   build:
