@@ -4,7 +4,6 @@ import { AppFooter, AppHeader } from "./components";
 import { ContextProvider } from "./context";
 import DApp from "./DApp";
 
-
 function App() {
   return (
     <ContextProvider>
