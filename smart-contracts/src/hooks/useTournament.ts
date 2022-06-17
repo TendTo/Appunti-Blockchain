@@ -7,7 +7,7 @@ import {
   useBlockNumber,
 } from "@usedapp/core";
 import { CallOverrides } from "ethers";
-import { useCallback, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import {
   TrustworthyRockPaperScissorsTournament,
   TrustworthyRockPaperScissorsTournament__factory as ContractFactory,
@@ -73,5 +73,6 @@ export function useTournament(contractAddress: string) {
     contract,
     results: [...results, { value, error }] as ResultsType,
     move: [moveRock, movePaper, moveScissor],
+    account,
   };
 }

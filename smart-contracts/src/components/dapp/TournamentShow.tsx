@@ -1,10 +1,8 @@
-import { useCall } from "@usedapp/core";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useTournament } from "../../hooks";
 
 type TournamentShowProps = {
-  p0: string;
-  p1: string;
+  opponent: string;
   tournament: string;
 };
 
@@ -23,8 +21,9 @@ function buttonClass(active: boolean, disabled: boolean) {
     : "bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded";
 }
 
-export function TournamentShow({ tournament, p0, p1 }: TournamentShowProps) {
+export function TournamentShow({ tournament, opponent }: TournamentShowProps) {
   const {
+    account,
     results,
     move: [{ send: moveRock }, { send: movePaper }, { send: moveScissor }],
   } = useTournament(tournament);
@@ -39,7 +38,6 @@ export function TournamentShow({ tournament, p0, p1 }: TournamentShowProps) {
     ],
     [results],
   );
-  console.log(results[0]?.value, numRounds, minFee, move);
   const moveMade = move !== "None";
 
   return (
@@ -48,9 +46,9 @@ export function TournamentShow({ tournament, p0, p1 }: TournamentShowProps) {
       <table>
         <thead>
           <tr>
-            <th>{p0}</th>
+            <th>{account}</th>
             <th>Vs.</th>
-            <th>{p1}</th>
+            <th>{opponent}</th>
           </tr>
         </thead>
         <tbody>
