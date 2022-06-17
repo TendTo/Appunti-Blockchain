@@ -1,0 +1,16 @@
+name: Dependabot auto-merge
+
+on:
+  schedule:
+    - cron: "0 0/6 * * *"
+  workflow_dispatch:
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mitto98/dependabot-automerge-action@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          merge-patch: true
+          merge-minor: true
