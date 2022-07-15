@@ -17,7 +17,7 @@
     "hardhat": "^2.10.0",
     "hardhat-gas-reporter": "^1.0.8",
     "solidity-coverage": "^0.7.21",
-    "ts-node": "^10.8.2"
+    "ts-node": "^10.9.1"
   },
   "description": "This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.",
   "version": "1.0.0",
